@@ -10,7 +10,7 @@ const donation_controller=new DonationController()
 const app = new Elysia()
 .use(rateLimit({
   duration:60000, //1 minutes
-  max:1, //maximal hit request in 60 seconds or 1 minutes,
+  max:80, //maximal hit request in 60 seconds or 1 minutes,
   errorResponse:"too many request" //when user hit too many request and reach the limit message will appear
 }))
 .use(openapi())
