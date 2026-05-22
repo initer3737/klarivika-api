@@ -1,13 +1,6 @@
-type t_data={
-    [key:string]:any
-}
-type t_response={
-    success: boolean,
-    message:string,
-    status:number,
-    data:t_data
-}
-type t_format_param=t_response
+import { t_api_format_param, t_response } from "../modules/types"
+
+
 
 class Api{
     constructor(){}
@@ -17,7 +10,7 @@ class Api{
         message,
         status,
         data
-    }:t_format_param):t_response {
+    }:t_api_format_param):t_response {
         return {
             success: success,
             message: message,

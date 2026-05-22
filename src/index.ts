@@ -7,6 +7,8 @@ import { DonationController } from "../src/modules";
 //rate limit 80
 // 429 Too Many Requests
 const donation_controller=new DonationController()
+const warcrime_keyword_route:string='/warcrime' 
+const donation_keyword_route:string='/donation' 
 const app = new Elysia()
 .use(rateLimit({
   duration:60000, //1 minutes
@@ -24,18 +26,27 @@ const app = new Elysia()
   return server?.requestIP(request)
 })
 .group('/v1',(app)=>
-    app
-    .group('/warcrime',(app)=>
-        app
-        .get("/",()=>"hello") 
-        .get("/:id",({params:{id}})=>"hello "+id) 
+  app
+// todo warcrime route start
+.get(`${warcrime_keyword_route}s`,()=>"hello") 
+.get(`${warcrime_keyword_route}/:id`,({params:{id}})=>"hello "+id) 
+// todo warcrime route end
+
+// todo donation route start
+.get(`${donation_keyword_route}s`,({set})=>{
+  return donation_controller.Index({status({ status_number }) {
+    set.status=status_number
+  },})
+}) 
+.get(`${donation_keyword_route}/:id/:country`,({set,params:{id,country}})=>{
+     return donation_controller.Show({status({ status_number }) {
+    set.status=status_number
+  },id,country})
+})
+// todo donation route end
+   
       )
-    .group('/donation',(app)=>
-        app 
-        .get("/",()=>donation_controller.Index()) 
-        .get("/:id",({params:{id}})=>"hello "+id)
-      )
-  )
+  
 .listen(3000);
 
 console.log(
