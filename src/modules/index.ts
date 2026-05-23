@@ -1,7 +1,7 @@
-import { Api } from "../utils";
-import { DonationController } from "./donation";
+import { Donation_api } from "../utils";
+import { DonationController } from "./donation/donation.controller";
 
 export {
-    Api,
+    Donation_api,
     DonationController
 }

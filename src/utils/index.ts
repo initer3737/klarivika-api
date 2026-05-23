@@ -1,7 +1,7 @@
-import { Api } from "./api_formater";
+import { Donation_api } from "./donation_api_formater";
 
 
 
 export{
-    Api
+    Donation_api
 }

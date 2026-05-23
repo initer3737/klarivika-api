@@ -1,13 +1,12 @@
 import { Elysia } from "elysia";
 import { openapi } from '@elysia/openapi'
 import { rateLimit } from 'elysia-rate-limit'
-import { Api } from "../src/modules";
 import { DonationController } from "../src/modules";
 //index is controller service model
 //rate limit 80
 // 429 Too Many Requests
 const donation_controller=new DonationController()
-const warcrime_keyword_route:string='/warcrime' 
+const crime_keyword_route:string='/crime' 
 const donation_keyword_route:string='/donation' 
 const app = new Elysia()
 .use(rateLimit({
@@ -27,10 +26,10 @@ const app = new Elysia()
 })
 .group('/v1',(app)=>
   app
-// todo warcrime route start
-.get(`${warcrime_keyword_route}s`,()=>"hello") 
-.get(`${warcrime_keyword_route}/:id`,({params:{id}})=>"hello "+id) 
-// todo warcrime route end
+// todo crime route start
+.get(`${crime_keyword_route}s`,()=>"hello") 
+.get(`${crime_keyword_route}/:id`,({params:{id}})=>"hello "+id) 
+// todo crime route end
 
 // todo donation route start
 .get(`${donation_keyword_route}s`,({set})=>{
