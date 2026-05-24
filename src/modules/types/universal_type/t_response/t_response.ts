@@ -1,10 +1,11 @@
+
 type t_data={
     [key:string]:any
 }
 type t_response={
     success: boolean,
     message:string,
-    status:number,
+    status: unknown,
     data:t_data
 }
 

@@ -1,10 +1,16 @@
 export enum e_status_code{
-    NotFound = 404,
-    Success = 200,
-    Accepted = 202,
-    BadRequest = 400,
-    ServerError=500,
-    TooMuchRequest=429 
+    NotFoundCode=404,
+    NotFoundMessage="404 not found",
+    SuccessCode=200,
+    SuccessMessage="200 ok!",
+    AcceptedCode=202,
+    AcceptedMessage="202 accepted",
+    BadRequestCode=400,
+    BadRequestMessage="400 bad request",
+    ServerErrorCode=500,
+    ServerErrorMessage="500 internal server error",
+    TooMuchRequestCode=429 ,
+    TooMuchRequestMessage="429 too much request try again later" 
 }
 
 // todo https://www.w3schools.com/typescript/typescript_enums.php
