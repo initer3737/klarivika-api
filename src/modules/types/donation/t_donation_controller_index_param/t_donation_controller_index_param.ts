@@ -1,9 +1,6 @@
-type t_status_number_param={
-    status_number:number | unknown
-}
-type t_donation_controller_index_param={
-    status:(({status_number}:t_status_number_param)=>void)
-}
+import { t_base_param_types } from "../.."
+
+type t_donation_controller_index_param=t_base_param_types
 
 
 export {

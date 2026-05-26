@@ -10,7 +10,9 @@ import {
 } from "./donation";
 import { 
 	t_response ,
-	t_api_format_param
+	t_api_format_param,
+	t_q_params,
+	t_base_param_types
 } from "./universal_type"
 
 
@@ -25,5 +27,7 @@ export {
 	t_donation_controller_index_param,
 	t_donation_service_index_param,
 	t_donation_controller_show_param,
-	t_donation_api_reformat_param
+	t_donation_api_reformat_param,
+	t_q_params,
+	t_base_param_types
 };

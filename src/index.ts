@@ -1,16 +1,37 @@
-import { Elysia } from "elysia";
+import { Elysia ,t} from "elysia";
 import { openapi } from '@elysia/openapi'
 import { rateLimit } from 'elysia-rate-limit'
 import { DonationController } from "../src/modules";
+import { Universal_api_util } from "./utils";
 //index is controller service model
 //rate limit 80
 // 429 Too Many Requests
 const donation_controller=new DonationController()
 const crime_keyword_route:string='/crime' 
 const donation_keyword_route:string='/donation' 
+// todo donation route start
+const v1donation=new Elysia()
+.get(`${donation_keyword_route}s`,({set,query})=>{
+      const q_params=Universal_api_util.get_queries_params({query})
+  return donation_controller.Index({q_params,status({ status_number }) {
+    if(typeof status_number === 'number')set.status=status_number
+  },})
+}) 
+.get(`${donation_keyword_route}/:id/:country`,({set,params:{id,country}})=>{
+     return donation_controller.Show({status({ status_number }) {
+    if(typeof status_number === 'number')set.status=status_number
+  },id,country})
+})
+// todo donation route end
+// todo crime route start
+const v1crime=new Elysia()
+.get(`${crime_keyword_route}s`,()=>"hello") 
+.get(`${crime_keyword_route}/:id`,({params:{id}})=>"hello "+id) 
+// todo crime route end
+
 const app = new Elysia()
 .use(rateLimit({
-  duration:60000, //1 minutes
+  duration:60_000, //1 minutes
   max:80, //maximal hit request in 60 seconds or 1 minutes,
   errorResponse:"too many request" //when user hit too many request and reach the limit message will appear
 }))
@@ -26,23 +47,22 @@ const app = new Elysia()
 })
 .group('/v1',(app)=>
   app
-// todo crime route start
-.get(`${crime_keyword_route}s`,()=>"hello") 
-.get(`${crime_keyword_route}/:id`,({params:{id}})=>"hello "+id) 
-// todo crime route end
+.use(v1crime)
+.use(v1donation)
+ 
+.get("/query",({query})=>query,{
+    query:t.Object({
+      name:t.String()
+    })
+  })
 
-// todo donation route start
-.get(`${donation_keyword_route}s`,({set})=>{
-  return donation_controller.Index({status({ status_number }) {
-    set.status=status_number
-  },})
-}) 
-.get(`${donation_keyword_route}/:id/:country`,({set,params:{id,country}})=>{
-     return donation_controller.Show({status({ status_number }) {
-    set.status=status_number
-  },id,country})
-})
-// todo donation route end
+  /**
+ * todo bisa filter data berdasarkan q_param
+ * todo q_global_id 
+ * todo q_search_country
+ * todo q_search{semua kecuali negara dan global id}
+ */
+
    
       )
   

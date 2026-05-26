@@ -11,13 +11,21 @@ import { DonationService } from "./donation.service";
 
 // todo https://www.w3schools.com/typescript/typescript_best_practices.php
 
+/**
+ * todo bisa filter data berdasarkan q_param
+ * todo q_search_country
+ * todo q_search{semua kecuali negara}
+ */
+
 class DonationController {
-	private model = new DonationModel();
-	private service = new DonationService();
+	private model:DonationModel = new DonationModel();
+	private service:DonationService = new DonationService();
 	constructor() {}
 	public Index({
 		status,
+		q_params
 	}: t_donation_controller_index_param): t_response {
+		
 		const model = this.model.getData();
 		const message = `${e_status_code.SuccessMessage}`;
 		const status_code = e_status_code.SuccessCode;

@@ -12,7 +12,7 @@ const donation_data_global_raw: t_donation_data_global = {
         const formated_data=val.persons.datas.map(val=>{
                 id_global_counter++
                 return {
-                    id_global:id_global_counter,
+                    id:id_global_counter,
                     ...val
                 }
             })

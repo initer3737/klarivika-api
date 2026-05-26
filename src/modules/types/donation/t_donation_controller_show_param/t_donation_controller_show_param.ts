@@ -1,6 +1,6 @@
-import { t_donation_controller_index_param } from "../t_donation_controller_index_param/t_donation_controller_index_param"
+import { t_base_param_types } from "../.."
 
- type t_donation_controller_show_param=t_donation_controller_index_param&{
+ type t_donation_controller_show_param=t_base_param_types&{
     id:string,
     country:string
  }
