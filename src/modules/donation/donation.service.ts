@@ -1,15 +1,15 @@
 import { Donation_api } from "..";
 import { t_response, t_donation_service_index_param } from "../types";
 //? berperan sebagai view
-//? controller memanggil model untuk komunikasi ke database
+//? repository memanggil model untuk komunikasi ke database
 //? service digunakkan untuk menampilkan api
-//? controller memanggil model dan sekaligus view atau service
-//? callback based untuk service dan controller
-//? service memformat api lalu dimasukkan model di dalam argumen format api lalu di controller panggil model dan service model hanya passing data ke service
+//? controller memanggil repositry
+//? callback based untuk mengoper status codennya
+//? service memformat api lalu dimasukkan data di dalam argumen format api lalu di repository panggil model dan service ,model hanya passing data ke service
 
 class DonationService {
 	public Index({
-		model,
+		datas,
 		message,
 		status,
 		success,
@@ -18,7 +18,7 @@ class DonationService {
 			success,
 			message,
 			status,
-			data: model,
+			data: datas,
 		});
 	}
 }

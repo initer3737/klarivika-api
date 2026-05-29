@@ -1,10 +1,5 @@
-import { t_donation_data_member } from "../..";
+import { t_donation_person_datas } from "../t_donation_person_datas/t_donation_person_datas";
 
-type t_donation_person_datas = {
-	persons: {
-		datas: t_donation_data_member[];
-	};
-};
 
 type t_donation_country_name = {
 	[name: string]: t_donation_person_datas;

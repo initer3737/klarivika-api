@@ -1,26 +1,67 @@
-import {t_donation_data_global } from "../types"
-import { donation_data_global } from "./donation_data"
-
+import { Universal_api_util,Donation_api } from "../../utils"
+import {t_donation_data_global,t_donation_data_member } from "../types"
+import { DonationDatabase } from "./donation.database"
+//todo komunikasi dengan database
 type t_model_param={
-    [key:string]:string
+    [key:string]:string|number
 }
 class DonationModel{
-    private data:t_donation_data_global={...donation_data_global}
-  
-    
-    public getData():t_donation_data_global {
-       return this.data
-    }
-
+    private database:DonationDatabase=new DonationDatabase()
+    private donation_util=Donation_api
+    public getData=()=>this.database.getData()
     public findAll():t_donation_data_global{
-        return this.data
+        return this.database.getData()
+    }
+    public findAnyValue():t_donation_data_global{
+                const data=this.database.getData()
+                const query=""
+                const data_person:t_donation_data_member[]=[]
+          //todo: validasi untuk orang
+          Object.values(data.countries).forEach(country_data=>{
+                Object.values(country_data.persons.datas).forEach(person_data=>{
+                    const validate_search=Universal_api_util.deep_search({value:person_data,query})
+                    if(validate_search){
+                        data_person.push(person_data)
+                    }
+                })
+          })
+
+            const grouped_data=this.donation_util.group_by({datas:data_person,group_by:"country_name"})
+        return this.donation_util.reformat_mass_country({
+                    country_Data:grouped_data
+                })
     }
     /**
-     * @desc to find data based on object given by developer
+     * @desc to find data based on object given data object by developer
      * @param param 
      */
-    public findBy(param:t_model_param){
-
+    public findBy(param:t_model_param,logic:'or'|'and'='and'):t_donation_data_global{
+                //todo param
+                //? ambil data sampai level profile lalu di reformat pakai group by method
+                //? parsial dan logika pakai or
+                const params=param
+                const search_values:Array<string|number>=[]
+                for(const [key,value] of Object.entries(params)){
+                        if(key === 'id')continue
+                        search_values.push(key,value)
+                }
+                const result_datas:t_donation_data_member[]=[]
+                const datas=this.database.getData()
+                Object.values(datas.countries).forEach((data_country)=>{
+                    data_country.persons.datas.forEach(person_Data=>{
+                        const search_logic=Universal_api_util.deep_search2({data:person_Data,queries:search_values,logic})
+                        if(search_logic){
+                            result_datas.push(person_Data)
+                        }
+                    })
+                })
+                const grouped_data=this.donation_util.group_by({group_by:'country_name',datas:result_datas})
+                return this.donation_util.reformat_mass_country({
+                    country_Data:grouped_data
+                })
+           
+        //todo maka dia akan jadi some[or] atau every[and] lalu query akan di iterasi jadi key dan value dengan logic key === value atau agar parsial gunakkan teknik string dan includes gweh suka parsial karena mirip ama sql like %what data should i search?% dan dia gak strict gunakkan deep search untuk menelusuri ranting bercabang [nested object maupun array] 
+        
     }
 }
 

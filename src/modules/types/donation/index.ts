@@ -6,6 +6,8 @@ import { t_donation_controller_index_param } from "./t_donation_controller_index
 import { t_donation_service_index_param } from "./t_donation_service_index_param/t_donation_service_index_param";
 import { t_donation_controller_show_param } from "./t_donation_controller_show_param/t_donation_controller_show_param";
 import { t_donation_api_reformat_param } from "./t_donation_api_reformat_param/t_donation_api_reformat_param";
+import { t_donation_person_datas } from "./t_donation_person_datas/t_donation_person_datas";
+import { t_donation_repository_index_param } from "./t_donation_repository_index_param/t_donation_repository_index_param";
 
 export {
 	t_donation_data_member,
@@ -15,5 +17,7 @@ export {
 	t_donation_controller_index_param,
 	t_donation_service_index_param,
 	t_donation_controller_show_param,
-	t_donation_api_reformat_param
+	t_donation_api_reformat_param,
+	t_donation_person_datas,
+	t_donation_repository_index_param
 };

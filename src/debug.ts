@@ -1,9 +1,12 @@
+import { Donation_api } from "./utils"
+
 //by object
 type t_person={
     id: number,
     name:string,
     youtube_profile:string ,
     youtube_channel:string ,
+    country_name:string ,
     link: {
     name:string,
     url:string
@@ -40,6 +43,7 @@ const api:t_api={
               "name": "mahira",
               "youtube_profile": "",
               "youtube_channel": "",
+              "country_name":"palestine",
               "link": {
                 "name": "link",
                 "url": ""
@@ -49,11 +53,51 @@ const api:t_api={
             }
           ]
         }
-      }
+      }, //palestine
+      "english": {
+        "persons": {
+          "datas": [
+            {
+              "id": 1,
+              "name": "cindy",
+              "youtube_profile": "",
+              "youtube_channel": "",
+              "country_name":"english",
+              "link": {
+                "name": "link",
+                "url": ""
+              },
+              "image": "picture.jpg",
+              "story": "she struggle for her life in gaza and feed her children"
+            }
+          ]
+        }
+      } //english
     }
   }
 }
 
+const group_by=({group_by}:{group_by:keyof t_person}):t_data=>{
+   const grouped_data=Object.values(api.datas.countries).reduce((acc,data_country,idx)=>{
+            const group_by_key=group_by
+            data_country.persons.datas.forEach(person=>{
+                const country=person[group_by_key] as string
+                //todo kalau group by key kosong
+                if(!acc[country]){
+                    acc[country]={
+                        persons:{datas:[]}
+                    }
+                }
+                acc[country].persons.datas.push(person)
+            })
+        return acc
+    },{} as Record<string,{persons:{datas:t_person[]}}>)
+    return {countries:grouped_data}
+}
+
+const apis=Donation_api
+
+//const format1=apis.reformat()
 
 const q_params = 'struggle'; 
 // Contoh pencarian (bisa parsial seperti 'mahi' atau 'gaza') [pencarian data tidak harus sama persis cuma potongan karakter sudah dianggap benar]
@@ -79,7 +123,7 @@ const deepSearch = (value: any, query: string): boolean => {
     
     // Jika value berupa Object (bukan null/array), cek semua value dari property-nya lalu validasi type akan terus berulang dan diproses sehingga data di param value akan menjadi type data primitif berupa string number ataupun boolean
     if (typeof value === 'object') {
-        return Object.values(value).some(item => deepSearch(item, query));
+        return Object.entries(value).some(item => deepSearch(item, query));
     }
     
     // Untuk tipe data lain seperti number, jika ingin dicocokkan juga bisa diubah ke string
