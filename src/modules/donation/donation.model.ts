@@ -1,25 +1,27 @@
 import { Universal_api_util,Donation_api } from "../../utils"
-import {t_donation_data_global,t_donation_data_member } from "../types"
+import { DonationModelAbstract } from "../abstracts"
+import { DonationModelInterface } from "../interfaces"
+import {t_donation_data_global,t_donation_data_member,t_model_find_all_value_skip_id_param,t_model_find_by_param } from "../types"
 import { DonationDatabase } from "./donation.database"
 //todo komunikasi dengan database
-type t_model_param={
-    [key:string]:string|number
-}
-class DonationModel{
-    private database:DonationDatabase=new DonationDatabase()
-    private donation_util=Donation_api
-    public getData=()=>this.database.getData()
+
+
+class DonationModel extends DonationModelAbstract implements DonationModelInterface{
+    protected database:DonationDatabase=new DonationDatabase()
+    protected donation_util=Donation_api
+    public getData=():t_donation_data_global=>this.database.getData()
     public findAll():t_donation_data_global{
         return this.database.getData()
     }
-    public findAnyValue():t_donation_data_global{
+    public findAllValueSkipId({query}:t_model_find_all_value_skip_id_param):t_donation_data_global{
                 const data=this.database.getData()
-                const query=""
+                // const query=""
                 const data_person:t_donation_data_member[]=[]
           //todo: validasi untuk orang
           Object.values(data.countries).forEach(country_data=>{
                 Object.values(country_data.persons.datas).forEach(person_data=>{
-                    const validate_search=Universal_api_util.deep_search({value:person_data,query})
+                    //? bikin skiping field untuk deep_Search
+                    const validate_search=Universal_api_util.deep_search({value:person_data,query,skiping_field:['id']})
                     if(validate_search){
                         data_person.push(person_data)
                     }
@@ -35,21 +37,21 @@ class DonationModel{
      * @desc to find data based on object given data object by developer
      * @param param 
      */
-    public findBy(param:t_model_param,logic:'or'|'and'='and'):t_donation_data_global{
+    public findBy({param,logic='and'}:t_model_find_by_param):t_donation_data_global{
                 //todo param
                 //? ambil data sampai level profile lalu di reformat pakai group by method
                 //? parsial dan logika pakai or
                 const params=param
                 const search_values:Array<string|number>=[]
                 for(const [key,value] of Object.entries(params)){
-                        if(key === 'id')continue
+                        // if(key === 'id')continue
                         search_values.push(key,value)
                 }
                 const result_datas:t_donation_data_member[]=[]
                 const datas=this.database.getData()
                 Object.values(datas.countries).forEach((data_country)=>{
                     data_country.persons.datas.forEach(person_Data=>{
-                        const search_logic=Universal_api_util.deep_search2({data:person_Data,queries:search_values,logic})
+                        const search_logic=Universal_api_util.deep_search2({data:person_Data,queries:search_values,logic,skiping_field:[]})
                         if(search_logic){
                             result_datas.push(person_Data)
                         }

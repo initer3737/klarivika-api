@@ -1,7 +1,7 @@
 import { t_base_param_types } from "../.."
 
  type t_donation_controller_show_param=t_base_param_types&{
-    id:string,
+    id:number|string,
     country:string
  }
 

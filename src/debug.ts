@@ -147,3 +147,19 @@ Object.values(api.datas.countries).forEach(country => {
 });
 
 console.log(searchResults);
+
+
+const skiping=['id','name']
+const datas={id:1,name:"jaka",tinggi:123} 
+const skipped_data=Object.entries(datas).reduce((acc,[key,value])=>{
+      if(skiping.length>0){
+          if(!skiping.includes(key)){
+              acc[key]=value
+          }
+      }else{
+        acc[key]=value
+      }
+      return acc
+},{} as Record<string,any>)
+
+console.log(skipped_data)

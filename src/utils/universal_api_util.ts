@@ -1,3 +1,4 @@
+import { e_status_code } from "../modules/enum"
 import { t_q_params ,t_deep_search2,t_deep_search} from "../modules/types"
 
 
@@ -21,14 +22,14 @@ export class Universal_api_util{
             *@param {any} value 
       */
      
-     public static deep_search({value,query}:t_deep_search):boolean{
+     public static deep_search({value,query,skiping_field}:t_deep_search):boolean{
             const validate_data={
                   value_is_string:typeof value === 'string',
                   value_is_array:Array.isArray(value),
                   value_is_number:typeof value === 'number',
                   value_is_object:typeof value === 'object',
             }
-            if(!value)return false
+            if(value === null ||  value === undefined)return false
             if(validate_data.value_is_string){
                   return value.toLowerCase().includes(query.toLowerCase())
             }
@@ -36,17 +37,32 @@ export class Universal_api_util{
                   return String(value).toLowerCase().includes(query)
             }
             if(validate_data.value_is_array){
-                  return value.some((val:string|number|object)=>this.deep_search({query:query,value:val}))
+                  return value.some((val:string|number|object)=>this.deep_search({query:query,value:val,skiping_field}))
             }
             if(validate_data.value_is_object){
-                  return Object.values(value).some(val=>this.deep_search({query:query,value:val}))
+
+                  return Object.entries(value)
+                  .map(([key,values])=>{
+                        //? kalau skiping field ada isinya
+                        if(skiping_field.length>0){
+                              //? lewati key tertentu
+                              if(!skiping_field.includes(key)){
+                                    return values
+                              }
+                        }else{
+                              //?kalau kosong gak ada nilainya
+                              return values
+                        }
+                  })
+                  .filter(val=>val!==undefined)
+                  .some(val=>this.deep_search({query:query,value:val,skiping_field}))
             }
 
            return false 
      } 
 
      
-     public static deep_search2=({data,queries,logic='or'}:t_deep_search2):boolean=>{
+     public static deep_search2=({data,queries,logic='or',skiping_field}:t_deep_search2):boolean=>{
                 const validate_data_type={
                     array:Array.isArray(data),
                     string:typeof data === 'string',
@@ -73,19 +89,30 @@ export class Universal_api_util{
                               //? misal queries berisi [country_name,palestine]
                               //? cocokkan semua value dari queries dan semua data di queries harus ada didalam data
                               //? query_data menyimpan queries untuk dicocokkan pada saat data di ekstrak menjadi type data primitif  
-                            return data.some(valsome=>this.deep_search2({data:valsome,queries:queries,logic}))
+                            return data.some(valsome=>this.deep_search2({data:valsome,queries:queries,logic,skiping_field}))
                         
                   }
                   //? jika pengecekkan object ditaruh dipaling atas maka dia akan menyebabkan infinite loop karena object di konversi sebagai array lalu di cek di pengecekan object lagi tanpa henti karena array adalah object juga
                   if(typeof data ==='object'){
                  
                         const data_arrays=Object.entries(data as Record<string,any>)
+                        .reduce((acc,[key,value])=>{
+                              if(skiping_field.length>0){
+                                    if(skiping_field.includes(key)){
+                                          acc[key]=value
+                                    }
+                              }else{
+                                    acc[key]=value
+                              }
+
+                              return acc
+                        },{} as Record<string,any>)
                         //todo: check setiap data
                         //? kalau ada 1 data key match misal key maka akan terus check minimal 1 kecocokan dan dia true
                         //? jika data array [[name,jaka],[country_name,palestine]]
                         let local_object_string = "";
                         const nested_objects_or_arrays: any[] = [];
-                     for(const [key,value] of data_arrays){
+                     for(const [key,value] of Object.entries(data_arrays)){
                               //todo: cocokan key dan valuenya
                               //?kalau value ternyata adalah array dan object dan bukan null
                               if(value !== null && typeof value === 'object'){
@@ -108,7 +135,7 @@ export class Universal_api_util{
                               //todo: jika ternyata nested_objects_or_arrays adalah array atau object
                               if(nested_objects_or_arrays.length>0){
                                   return nested_objects_or_arrays.some(nested_data=>
-                                      this.deep_search2({data:nested_data,logic,queries})
+                                      this.deep_search2({data:nested_data,logic,queries,skiping_field})
                                     )
                               }     
                         //.every(val_every=>this.deep_search2({data:val_every,queries:queries,logic}))//.every(everyval=>deep_search_and())
@@ -137,5 +164,36 @@ export class Universal_api_util{
                   }
                   return false
             }
+
+
+
+            public static responses({cb,code}:{cb:({status_code_response,message_response,success_response}:{status_code_response:number,message_response:string,success_response:boolean})=>void,code:200|404}){
+                    let status_code_response:number
+                    let message_response:string
+                    let success_response:boolean
+                    const data_responses={
+                        200:{
+                            status_code_response:e_status_code.SuccessCode as number,
+                            message_response:e_status_code.SuccessMessage as string,
+                            success_response:true
+                        },
+                        404:{
+                            status_code_response:e_status_code.NotFoundCode as number,
+                            message_response:e_status_code.NotFoundMessage as string,
+                            success_response:false
+                        }
+                    }
+                     status_code_response=data_responses[code].status_code_response
+                     message_response=data_responses[code].message_response
+                     success_response=data_responses[code].success_response
+                    cb({
+                        message_response,
+                        status_code_response,
+                        success_response
+                    })
+                    
+
+                }
+
 
 }

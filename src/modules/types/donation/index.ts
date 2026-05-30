@@ -8,6 +8,9 @@ import { t_donation_controller_show_param } from "./t_donation_controller_show_p
 import { t_donation_api_reformat_param } from "./t_donation_api_reformat_param/t_donation_api_reformat_param";
 import { t_donation_person_datas } from "./t_donation_person_datas/t_donation_person_datas";
 import { t_donation_repository_index_param } from "./t_donation_repository_index_param/t_donation_repository_index_param";
+import { t_donation_repository_show_param } from "./t_donation_repository_show_param/t_donation_repository_show_param";
+import { t_model_find_all_value_skip_id_param } from "./t_model_find_all_value_skip_id_param/t_model_find_all_value_skip_id_param";
+import { t_model_find_by_param } from "./t_model_find_by_param/t_model_find_by_param";
 
 export {
 	t_donation_data_member,
@@ -19,5 +22,8 @@ export {
 	t_donation_controller_show_param,
 	t_donation_api_reformat_param,
 	t_donation_person_datas,
-	t_donation_repository_index_param
+	t_donation_repository_index_param,
+	t_donation_repository_show_param,
+	t_model_find_all_value_skip_id_param,
+	t_model_find_by_param
 };

@@ -3,9 +3,11 @@ import { openapi } from '@elysia/openapi'
 import { rateLimit } from 'elysia-rate-limit'
 import { DonationController } from "../src/modules";
 import { Universal_api_util } from "./utils";
+import { DonationService } from "./modules/donation/donation.service";
 //index is controller service model
 //rate limit 80
 // 429 Too Many Requests
+const service=new DonationService()
 const donation_controller=new DonationController()
 const crime_keyword_route:string='/crime' 
 const donation_keyword_route:string='/donation' 
@@ -18,6 +20,7 @@ const v1donation=new Elysia()
   },})
 }) 
 .get(`${donation_keyword_route}/:id/:country`,({set,params:{id,country}})=>{
+  // let status_code:number=200 ,message:string="ok",success:boolean=true 
      return donation_controller.Show({status({ status_number }) {
     if(typeof status_number === 'number')set.status=status_number
   },id,country})
@@ -45,7 +48,7 @@ const app = new Elysia()
 .get("/ip", ({server,request}) =>{
   return server?.requestIP(request)
 })
-.group('/v1',(app)=>
+.group('api/v1',(app)=>
   app
 .use(v1crime)
 .use(v1donation)
